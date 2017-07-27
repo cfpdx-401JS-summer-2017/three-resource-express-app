@@ -83,4 +83,14 @@ describe('REST API for walkways', () => {
                 assert.deepEqual(walkways, [easy, steep]);
             });
     });
+
+    it('removes a walkway by id', () => {
+        return request.delete(`/walkways/${easy._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: true }));
+    });
+
+    it('returns removed: false if walkway not there to remove', () => {
+        return request.delete(`/walkways/${easy._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: false }));
+    });
 });
