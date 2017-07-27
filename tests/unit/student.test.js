@@ -12,9 +12,8 @@ describe('Student model', () => {
     });
 
     it('fails validation with missing required fields', () => {
-        const student = new Student({
-            name: null,
-        });
+        const student = new Student();
+            
         return student.validate()
             .then(
                 () => { throw new Error('Expected validation error'); },
@@ -29,7 +28,12 @@ describe('Student model', () => {
         const student = new Student({
             name: {},
         });
-        return student.validate();
+        return student.validate()
+            .then(
+                () => { throw new Error('Expected validation error'); },
+                ({ errors }) => {
+                    assert.ok(errors.name);
+                }
+            );
     });
-
 });
