@@ -63,19 +63,19 @@ describe('albums REST api', () => {
                 assert.ok(album._id);
                 assert.equal(album.name, album1.name);
                 
-        });
+            });
     });
 
     it('returns 404 if album does not exist', () => {
         return request.get('/albums/58ff9f496aafd447254c29b5')
-        .then(
-            () => {
-                throw new Error('successful status code not expected');
-            },
-            ({ response }) => {
-                assert.ok(response.notFound);
-            }
-        );
+            .then(
+                () => {
+                    throw new Error('successful status code not expected');
+                },
+                ({ response }) => {
+                    assert.ok(response.notFound);
+                }
+            );
     });
 
     it('GETs all albums', () => {
@@ -86,14 +86,30 @@ describe('albums REST api', () => {
             .then(() => request.get('/albums'))
             .then(res => {
                 const albums = res.body;
-                console.log('hey i am here', albums);
                 assert.deepEqual(albums, [album1,album2,album3]);
             });
     });
-    it ('DELETES the album by id', () => {
+
+    it('updates an item by id with PUT request', () => {
+        const rageAgainstTheMachine = {
+            name: 'Battle for Los Angeles',
+            genre: 'Rap',
+            year: 2000,
+            tracks: 13
+        };
+        return request.put(`/albums/${album3._id}`)
+            .send(rageAgainstTheMachine)
+            .then(res => res.body)
+            .then(album => {
+                assert.equal(album.name, rageAgainstTheMachine.name);
+                assert.equal(album.genre, rageAgainstTheMachine.genre);
+            });
+    });
+
+    it('DELETES the album by id', () => {
         return request.delete(`/albums/${album3._id}`)
-        .then (res => {
-            assert.deepEqual(JSON.parse(res.text), {removed: true});
-        })
+            .then (res => {
+                assert.deepEqual(JSON.parse(res.text), {removed: true});
+            });
     });
 });
