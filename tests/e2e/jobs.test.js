@@ -94,8 +94,20 @@ describe('Job REST api', () => {
             });
     });
 
-    // it('updates job by id', () => {
-    //     let job = 
-    // });
+    it.skip('updates job by id', () => {
+        let job = {
+            position: 'JavaScript Developer',
+            company: 'Intel',
+            applied: false
+        };
+        let jobUpdate = { applied: true };
+
+        return save(job)
+            .then(res => res.body = job)
+            .then(job => request.put(`/jobs/${job._id}`).send(jobUpdate))
+            .then(res => {
+                assert.deepEqual(res.body.applied, jobUpdate.applied);
+            });
+    });
 
 });
