@@ -94,16 +94,16 @@ describe('Job REST api', () => {
             });
     });
 
-    it.skip('updates job by id', () => {
-        let job = {
+    it('updates job by id', () => {
+        let newJob = {
             position: 'JavaScript Developer',
             company: 'Intel',
             applied: false
         };
         let jobUpdate = { applied: true };
 
-        return save(job)
-            .then(res => res.body = job)
+        return save(newJob)
+            .then(res => res.body = newJob)
             .then(job => request.put(`/jobs/${job._id}`).send(jobUpdate))
             .then(res => {
                 assert.deepEqual(res.body.applied, jobUpdate.applied);
