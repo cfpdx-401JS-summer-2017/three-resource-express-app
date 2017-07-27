@@ -105,7 +105,9 @@ describe.only('projects REST api', () => {
             .then(res => {
                 const projects = res.body;
                 assert.equal(projects.length, 3);
-                assert.deepEqual(projects, [demo, road, demo2]);
+                assert.equal(projects[0]._id, demo._id);
+                assert.equal(projects[1]._id, road._id);
+                assert.equal(projects[2]._id, demo2._id);
             });
     });
 });
