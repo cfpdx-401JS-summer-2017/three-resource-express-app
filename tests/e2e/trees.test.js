@@ -106,7 +106,7 @@ describe('REST API for trees', () => {
     });
 
     it('patches a tree by id', () => {
-        return request.put(`/trees/${redwood._id}`)
+        return request.patch(`/trees/${redwood._id}`)
             .send({ variety: 'cedar' })
             .then(res => assert.equal(res.body.variety, 'cedar'));
     });

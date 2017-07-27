@@ -100,4 +100,10 @@ describe('REST API for walkways', () => {
             .then(() => request.get(`/walkways/${steep._id}`))
             .then(res => assert.equal(res.body['length'], 100));
     });
+
+    it('patches a walkway by id', () => {
+        return request.patch(`/walkways/${steep._id}`)
+            .send({ composition: 'dirt' })
+            .then(res => assert.equal(res.body.composition, 'dirt'));
+    });
 });
