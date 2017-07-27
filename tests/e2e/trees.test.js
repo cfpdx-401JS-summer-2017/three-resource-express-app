@@ -99,10 +99,10 @@ describe('REST API for trees', () => {
     });
 
     it('updates a tree by id', () => {
-        return request.put(`/trees/${redwood}._id`)
-            .send({ bark: 'rough' })
+        return request.put(`/trees/${redwood._id}`)
+            .send({ bark: [ { texture: 'rough'}, { color: 'red' }] })
             .then(() => request.get(`/trees/${redwood._id}`))
-            .then(res => assert.deepEqual(res.body.bark, 'rough'));
+            .then(res => assert.equal(res.body.bark.length, 2));
     });
 
 
