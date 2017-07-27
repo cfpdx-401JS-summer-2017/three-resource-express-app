@@ -1,10 +1,12 @@
 const Machine = require('../../lib/models/machine');
+
 const { assert } = require('chai');
 
 describe('Machine model', () => {
+
     it('validates with required fields', () => {
         const dozer = new Machine({
-            type: dozer,
+            type: 'bulldozer',
             weight: 60000,
             width: {
                 feet: 8,
@@ -14,6 +16,18 @@ describe('Machine model', () => {
         });
 
         return dozer.validate();
+    });
 
+    it('fails validation when required fields are missing', () => {
+        const machine = new Machine();
+
+        return machine.validate()
+            .then(
+                () => { throw new Error('Expected Validation Error'); },
+                ({ errors }) => {
+                    assert.ok(errors.type);
+                    assert.ok(errors.weight);
+                }
+            );
     });
 });
