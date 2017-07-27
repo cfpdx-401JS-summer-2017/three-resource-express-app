@@ -39,12 +39,36 @@ describe('REST API for trees', () => {
             });
     }
 
-    it('saves a tree', () => {
+    it.only('saves a tree', () => {
         return saveTree(oak)
             .then(savedTree => {
                 assert.ok(savedTree._id);
                 assert.deepEqual(savedTree, oak);
             });
+    });
+
+    it('GETs count of trees', () => {
+        return request.get('/trees/count')
+            .then(count => count.body)
+            .then(count => assert.ok(count));
+    });
+
+    it('GETs a tree if it exists', () => {
+        return request.get(`/trees/${oak._id}`)
+            .then(res => res.body)
+            .then(tree => assert.deepEqual(tree, oak));
+    });
+
+    it('returns 404 if tree does not exist', () => {
+        return request.get('/trees/123412345567898765466676')
+            .then(() => {
+                throw new Error('received 200 code when should be 404');
+            },
+            ({ response }) => {
+                assert.ok(response.notFound);
+                assert.ok(response.body.error);
+            }
+            );
     });
 
 
