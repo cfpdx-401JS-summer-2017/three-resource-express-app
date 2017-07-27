@@ -35,6 +35,8 @@ describe('REST API for trees', () => {
             .then(({ body }) => {
                 tree._id = body._id;
                 tree.__v = body.__v;
+                tree.bark = body.bark;
+                tree.locations = body.locations;
                 return tree;
             });
     }
@@ -47,13 +49,13 @@ describe('REST API for trees', () => {
             });
     });
 
-    it('GETs count of trees', () => {
+    it.only('GETs count of trees', () => {
         return request.get('/trees/count')
             .then(count => count.body)
             .then(count => assert.ok(count));
     });
 
-    it('GETs a tree if it exists', () => {
+    it.only('GETs a tree if it exists', () => {
         return request.get(`/trees/${oak._id}`)
             .then(res => res.body)
             .then(tree => assert.deepEqual(tree, oak));
