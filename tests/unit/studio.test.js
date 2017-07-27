@@ -21,7 +21,6 @@ describe('studio model', () => {
                 () => { throw new Error('Expected validation error'); },
                 ({ errors }) => {
                     assert.ok(errors.name);
-                    assert.ok(errors.age);
                 }
             );
     });

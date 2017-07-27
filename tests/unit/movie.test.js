@@ -4,7 +4,7 @@ const {assert} = require('chai');
 describe('Movie model', () => {
     it('validates with required fields', () =>{
         const movie = new Movie({
-            name: 'Star Wars',
+            title: 'Star Wars',
             year: 1977,
             genre: 'Sci-Fi',
             cast: [
@@ -23,7 +23,7 @@ describe('Movie model', () => {
             .then(
                 () => { throw new Error('Expected validation error'); },
                 ({ errors }) => {
-                    assert.ok(errors.name);
+                    assert.ok(errors.title);
                     assert.ok(errors.year);
                 }
             );
