@@ -105,6 +105,10 @@ describe('REST API for trees', () => {
             .then(res => assert.equal(res.body.bark.length, 2));
     });
 
-
+    it('patches a tree by id', () => {
+        return request.put(`/trees/${redwood._id}`)
+            .send({ variety: 'cedar' })
+            .then(res => assert.equal(res.body.variety, 'cedar'));
+    });
 
 });
