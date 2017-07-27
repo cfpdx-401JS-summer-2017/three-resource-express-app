@@ -1,0 +1,1 @@
+const Studio = require('../../lib/models/studio');
