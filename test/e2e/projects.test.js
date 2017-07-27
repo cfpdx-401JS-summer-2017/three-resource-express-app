@@ -76,7 +76,9 @@ describe.only('projects REST api', () => {
     });
 
     it('gets a saved project by id', () => {
-        return request.get(`/projects/${demo._id}`)
+        return request
+            .get(`/projects/${demo._id}`)
+            .then( res => res.body )
             .then( gotProject => {
                 assert.deepEqual(gotProject, demo);
             });
