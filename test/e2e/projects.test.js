@@ -111,7 +111,7 @@ describe.only('projects REST api', () => {
             });
     });
 
-    it('deletes an object by a given id', () => {
+    it.skip('deletes an object by a given id', () => {
         return request.delete(`/projects/${demo2._id}`)
             .then( res => {
                 const message = JSON.parse(res.text);
