@@ -33,8 +33,6 @@ describe('REST API for walkways', () => {
                 walkway._id = body._id;
                 walkway.__v = body.__v;
                 walkway.type = body.type;
-                walkway.length = body.length;
-                walkway.composition = body.composition;
                 return walkway;
             });
     }
@@ -51,5 +49,11 @@ describe('REST API for walkways', () => {
         return request.get('/walkways/count')
             .then(count => count.body)
             .then(count => assert.ok(count));
+    });
+
+    it('GETs a walkway if it exists', () => {
+        return request.get(`/walkways/${hilly._id}`)
+            .then(res => res.body)
+            .then(walkway => assert.deepEqual(walkway, hilly));
     });
 });
