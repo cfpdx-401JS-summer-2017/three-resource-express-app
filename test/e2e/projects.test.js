@@ -110,4 +110,12 @@ describe.only('projects REST api', () => {
                 assert.equal(projects[2]._id, demo2._id);
             });
     });
+
+    it('deletes an object by a given id', () => {
+        return request.delete(`/projects/${demo2._id}`)
+            .then( res => {
+                const message = JSON.parse(res.text);
+                assert.deepEqual(message, { removed: false });
+            });
+    });
 });
