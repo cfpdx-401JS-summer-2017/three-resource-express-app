@@ -93,4 +93,11 @@ describe('REST API for walkways', () => {
         return request.delete(`/walkways/${easy._id}`)
             .then(res => assert.deepEqual(res.body, { removed: false }));
     });
+
+    it('updates a walkway by id', () => {
+        return request.put(`/walkways/${steep._id}`)
+            .send({ length: 100 })
+            .then(() => request.get(`/walkways/${steep._id}`))
+            .then(res => assert.equal(res.body['length'], 100));
+    });
 });
