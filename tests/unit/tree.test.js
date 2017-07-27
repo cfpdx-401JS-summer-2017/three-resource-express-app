@@ -1,11 +1,19 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
+const Tree = require('../../lib/models/tree');
+const { assert } = require('chai');
 
-process.env.MONGODB_URL = 'mongodb://localhost:27017/arboretum-test';
-require('../../lib/connect');
+describe('Tree model unit tests', () => {
+    it('validates with required fields', () => {
+        const tree = 
+    });
 
-const connection = require('mongoose').connection;
-const app = require('../../lib/app');
-const request = chai.request(app);
+
+
+
+
+
+
+
+
+
+
+});
