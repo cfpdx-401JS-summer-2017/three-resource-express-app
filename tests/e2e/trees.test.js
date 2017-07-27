@@ -41,7 +41,7 @@ describe('REST API for trees', () => {
             });
     }
 
-    it.only('saves a tree', () => {
+    it('saves a tree', () => {
         return saveTree(oak)
             .then(savedTree => {
                 assert.ok(savedTree._id);
@@ -49,19 +49,19 @@ describe('REST API for trees', () => {
             });
     });
 
-    it.only('GETs count of trees', () => {
+    it('GETs count of trees', () => {
         return request.get('/trees/count')
             .then(count => count.body)
             .then(count => assert.ok(count));
     });
 
-    it.only('GETs a tree if it exists', () => {
+    it('GETs a tree if it exists', () => {
         return request.get(`/trees/${oak._id}`)
             .then(res => res.body)
             .then(tree => assert.deepEqual(tree, oak));
     });
 
-    it.only('returns 404 if tree does not exist', () => {
+    it('returns 404 if tree does not exist', () => {
         return request.get('/trees/123412345567898765466676')
             .then(() => {
                 throw new Error('received 200 code when should be 404');
@@ -71,6 +71,21 @@ describe('REST API for trees', () => {
                 assert.ok(response.error);
             }
             );
+    });
+
+    it('GETs all trees', () => {
+        return Promise.all([
+            saveTree(birch),
+            saveTree(redwood)
+        ])
+            .then(res => {
+                const trees = res.sort((a,b) => {
+                    if(a.variety > b.variety) return 1;
+                    else if (a.variety < b.variety) return -1;
+                    else return 0;
+                });
+                assert.deepEqual(trees, [birch, redwood]);
+            });
     });
 
 
