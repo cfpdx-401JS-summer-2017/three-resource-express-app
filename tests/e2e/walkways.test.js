@@ -56,4 +56,31 @@ describe('REST API for walkways', () => {
             .then(res => res.body)
             .then(walkway => assert.deepEqual(walkway, hilly));
     });
+
+    it('returns 404 if walkway does not exist', () => {
+        return request.get('/walkways/123412345567898765466676')
+            .then(() => {
+                throw new Error('received 200 code when should be 404');
+            },
+            ({ response }) => {
+                assert.ok(response.notFound);
+                assert.ok(response.error);
+            }
+            );
+    });
+
+    it('GETs all walkways', () => {
+        return Promise.all([
+            saveWalkway(steep),
+            saveWalkway(easy)
+        ])
+            .then(res => {
+                const walkways = res.sort((a,b) => {
+                    if(a.type > b.type) return 1;
+                    else if (a.type < b.type) return -1;
+                    else return 0;
+                });
+                assert.deepEqual(walkways, [easy, steep]);
+            });
+    });
 });
