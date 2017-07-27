@@ -110,5 +110,4 @@ describe('REST API for trees', () => {
             .send({ variety: 'cedar' })
             .then(res => assert.equal(res.body.variety, 'cedar'));
     });
-
 });
