@@ -6,11 +6,6 @@ describe('Tree model unit tests', () => {
         const tree = new Tree({
             variety: 'Oak',
             type: 'deciduous',
-            locations: ['North America', 'South America'],
-            bark: [
-                { texture: 'smooth' },
-                { color: 'grey' }
-            ]
         });
         return tree.validate();
     });
