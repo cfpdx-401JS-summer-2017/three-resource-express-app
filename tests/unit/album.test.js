@@ -6,7 +6,7 @@ describe('Album model', () => {
         const album = new Album({
             name: 'Offcell',
             genre: 'Indie Pop',
-            yeah: 2003,
+            year: 2003,
             tracks: 5
         });
         return album.validate();
