@@ -3,7 +3,7 @@ const {assert} = require('chai');
 describe('Actor model', () => {
     it('validates with required fields', () =>{
         const actor = new Actor({
-            name: 'Marilon Minroe',
+            name: 'Marilyn Monroe',
             age: 36,
             living: false
         });
@@ -16,9 +16,7 @@ describe('Actor model', () => {
             .then(
                 () => { throw new Error('Expected validation error'); },
                 ({ errors }) => {
-                    //console.log('name errors => ',errors.name);
                     assert.ok(errors.name);
-                    //console.log('color errors => ',errors.color);
                     assert.ok(errors.age);
                 }
             );
