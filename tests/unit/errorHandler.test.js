@@ -1,7 +1,7 @@
 const { assert } = require('chai');
 const getErrorHandler = require('../../lib/error-handler.js');
 
-describe.only('error handler', () => {
+describe ('error handler', () => {
     const errorHandler = getErrorHandler();
 
     it('sends unknown error to 500 "Internal Server Error"', () => {
