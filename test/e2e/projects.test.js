@@ -83,4 +83,29 @@ describe.only('projects REST api', () => {
                 assert.deepEqual(gotProject, demo);
             });
     });
+
+    it('returns error if faulty id is passed for get request', () => {
+        return request
+            .get('/projects/2893416183148751961346ade')
+            .then(
+                () => { throw new Error('successful status code not expected');},
+                ({ response }) => {
+                    assert.equal(response.status, 500);
+                    assert.isOk(response.error);
+                }
+            );
+    });
+
+    it('returns a list of saved projects', () => {
+        return Promise.all([
+            saveProject(road),
+            saveProject(demo2)
+        ])
+            .then(() => request.get('/projects'))
+            .then(res => {
+                const projects = res.body;
+                assert.equal(projects.length, 3);
+                assert.deepEqual(projects, [demo, road, demo2]);
+            });
+    });
 });
