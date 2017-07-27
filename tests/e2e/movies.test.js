@@ -38,10 +38,16 @@ describe('movies REST api',()=>{
         ]
     };
     
+    const hhelv = {
+        title: 'Hellvetica',
+        year: 3015,
+        cast: []
+    };
     const helv = {
-        title: 'Helvetica',
+        title :'Helvetica',
         year: 2007,
         cast: []
+
     };
     function saveMovie(movie) {
         return request.post('/movies')
@@ -89,12 +95,33 @@ describe('movies REST api',()=>{
     it('GET all movies', () => {
         return Promise.all([
             saveMovie(somLH),
-            saveMovie(helv),
+            saveMovie(hhelv),
         ])
             .then(() => request.get('/movies'))
             .then(res => {
                 const movies = res.body;
-                assert.deepEqual(movies, [jarasP, somLH, helv]);
+                assert.deepEqual(movies, [jarasP, somLH, hhelv]);
+            });
+    });
+    it('rewrites movie data by id', ()=>{
+        return request.put(`/movies/${hhelv._id}`)
+            .send(helv)
+            .then(res => {
+                assert.isOk(res.body._id);
+                assert.equal(res.body.name,helv.name);
+                assert.equal(res.body.age,helv.age);
+            });
+    });
+    it('deletes movie by id', () =>{
+        return request.delete(`/movies/${somLH._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: true });
+            });
+    });
+    it('fails to delete movie by id', () =>{
+        return request.delete(`/movies/${somLH._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
     });
             

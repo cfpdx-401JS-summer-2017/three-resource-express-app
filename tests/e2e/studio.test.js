@@ -24,6 +24,15 @@ describe('studios REST api',()=>{
             zip: 99999
         }
     };
+    const mucasFlm = {
+        name: 'Muchas Film',
+        address:{
+            city: 'sanfan',
+            state: 'Cali',
+            zip: 32771
+
+        }
+    };
 
     const slvCup = {
         name: 'Silvercup',
@@ -48,21 +57,21 @@ describe('studios REST api',()=>{
 
     }
     it('saves a studio', () => {
-        return saveStudio(lucasFlm)
+        return saveStudio(mucasFlm)
             .then(savedStudio => {
                 assert.isOk(savedStudio._id);
-                assert.equal(savedStudio.name, lucasFlm.name);
-                assert.deepEqual(savedStudio.address, lucasFlm.address);
+                assert.equal(savedStudio.name, mucasFlm.name);
+                assert.deepEqual(savedStudio.address, mucasFlm.address);
             });
     });
 
     it('GETs studio if it exists', () => {
         return request
-            .get(`/studios/${lucasFlm._id}`)
+            .get(`/studios/${mucasFlm._id}`)
             .then(res => res.body)
             .then(studio => {
-                assert.equal(studio.name, lucasFlm.name);
-                assert.deepEqual(studio.address, lucasFlm.address);
+                assert.equal(studio.name, mucasFlm.name);
+                assert.deepEqual(studio.address, mucasFlm.address);
             });
     });
 
@@ -88,7 +97,28 @@ describe('studios REST api',()=>{
             .then(() => request.get('/studios'))
             .then(res => {
                 const studios = res.body;
-                assert.deepEqual(studios, [lucasFlm, slvCup, ealStu]);
+                assert.deepEqual(studios, [mucasFlm, slvCup, ealStu]);
+            });
+    });
+    it('rewrites studio data by id', ()=>{
+        return request.put(`/studios/${mucasFlm._id}`)
+            .send(lucasFlm)
+            .then(res => {
+                assert.isOk(res.body._id);
+                assert.equal(res.body.name,lucasFlm.name);
+                assert.equal(res.body.age,lucasFlm.age);
+            });
+    });
+    it('deletes studio by id', () =>{
+        return request.delete(`/studios/${slvCup._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: true });
+            });
+    });
+    it('fails to delete studio by id', () =>{
+        return request.delete(`/studios/${slvCup._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
     });
             

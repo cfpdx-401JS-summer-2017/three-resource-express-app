@@ -29,8 +29,12 @@ describe('actors REST api',()=>{
     };
     
     const harrsF = {
+        name: 'harrysin Ford',
+        age: 192,
+    };
+    const harrison = {
         name: 'Harrison Ford',
-        age: 75,
+        age: 75
     };
     function saveActor(actor) {
         return request.post('/actors')
@@ -84,6 +88,27 @@ describe('actors REST api',()=>{
             .then(res => {
                 const actors = res.body;
                 assert.deepEqual(actors, [peterD, audreyH, harrsF]);
+            });
+    });
+    it('rewrites actor data by id', ()=>{
+        return request.put(`/actors/${harrsF._id}`)
+            .send(harrison)
+            .then(res => {
+                assert.isOk(res.body._id);
+                assert.equal(res.body.name,harrison.name);
+                assert.equal(res.body.age,harrison.age);
+            });
+    });
+    it('deletes actor by id', () =>{
+        return request.delete(`/actors/${audreyH._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: true });
+            });
+    });
+    it('fails to delete actor by id', () =>{
+        return request.delete(`/actors/${audreyH._id}`)
+            .then(res => {
+                assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
     });
             
