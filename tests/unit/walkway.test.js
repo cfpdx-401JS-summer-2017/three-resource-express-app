@@ -49,15 +49,4 @@ describe('Walkway model unit tests', () => {
             }
             );
     });
-
-
-
-
-
-
-
-
-
-
-
 });
