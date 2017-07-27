@@ -88,6 +88,15 @@ describe('REST API for trees', () => {
             });
     });
 
+    it('removes a tree by id', () => {
+        return request.delete(`/trees/${birch._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: true }));
+    });
+    
+    it('returns removed: false if no tree to remove', () => {
+        return request.delete(`/trees/${birch._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: false }));
+    });
 
 
 
