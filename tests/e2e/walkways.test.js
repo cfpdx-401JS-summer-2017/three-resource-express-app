@@ -18,11 +18,11 @@ describe('REST API for walkways', () => {
         type: 'hilly'
     };
 
-    const steep = {
+    const steep = {  // eslint-disable-line
         type: 'steep'
     };
 
-    const easy = {
+    const easy = {  // eslint-disable-line
         type: 'easy'
     };
 
