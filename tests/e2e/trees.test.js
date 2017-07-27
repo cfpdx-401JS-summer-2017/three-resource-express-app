@@ -98,7 +98,12 @@ describe('REST API for trees', () => {
             .then(res => assert.deepEqual(res.body, { removed: false }));
     });
 
-
+    it('updates a tree by id', () => {
+        return request.put(`/trees/${redwood}._id`)
+            .send({ bark: 'rough' })
+            .then(() => request.get(`/trees/${redwood._id}`))
+            .then(res => assert.deepEqual(res.body.bark, 'rough'));
+    });
 
 
 
