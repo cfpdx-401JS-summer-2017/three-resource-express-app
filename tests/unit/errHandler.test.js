@@ -12,7 +12,7 @@ function createErrorHandler() {
     };
 }
 
-describe.only('error handler', () => {
+describe('error handler', () => {
 
     const errorHandler = createErrorHandler();
 
