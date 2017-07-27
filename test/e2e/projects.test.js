@@ -118,4 +118,20 @@ describe.only('projects REST api', () => {
                 assert.deepEqual(message, { removed: true });
             });
     });
+
+    it.skip('returns removed: false when a bad id is given for delete', () => {
+        return request.delete('/projects/23d47592034754ned8324167')
+            .then( res => {
+                const message = JSON.parse(res.text);
+                assert.deepEqual( message, { removed: false });
+            });
+    });
+
+    it('updates a resource that is identified by its id', () => {
+        return request.put(`/projects/${demo._id}`)
+            .send({ contractPrice: '$175,000' })
+            .then( res => {
+                assert.deepEqual( res.body, { modified: true });
+            });
+    });
 });
