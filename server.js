@@ -1,0 +1,11 @@
+const app = require('./lib/app');
+const http = require('http');
+require('./lib/connect');
+
+const server = http.createServer(app);
+
+const port = 3000;
+
+server.listen(port, () => {
+    console.log('Server running on port', server.address().port);
+});
