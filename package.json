@@ -1,13 +1,14 @@
 {
   "name": "three-resource-express-app",
   "version": "1.0.0",
-  "description": "first attempt at middelware implimnetation",
+  "description": "first attempt at middelware implementation",
   "main": "server.js",
   "directories": {
     "lib": "lib",
     "test": "tests"
   },
   "scripts": {
+    "test": "mocha tests --recursive",
     "test:unit": "mocha tests/unit",
     "dev:unit": "nodemon --exec 'npm run test:unit'",
     "test:e2e": "mocha tests/e2e",
