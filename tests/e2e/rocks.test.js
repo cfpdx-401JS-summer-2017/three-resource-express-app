@@ -83,4 +83,14 @@ describe('REST API for rocks', () => {
             });
     });
 
+    it('removes a rock by id', () => {
+        return request.delete(`/rocks/${obsidian._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: true }));
+    });
+
+    it('returns removed: false if rock not there to remove', () => {
+        return request.delete(`/rocks/${obsidian._id}`)
+            .then(res => assert.deepEqual(res.body, { removed: false }));
+    });
+
 });
