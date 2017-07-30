@@ -68,4 +68,19 @@ describe('REST API for rocks', () => {
             );
     });
 
+    it('GETs all rocks', () => {
+        return Promise.all([
+            saveRock(obsidian),
+            saveRock(basalt)
+        ])
+            .then(res => {
+                const rocks = res.sort((a,b) => {
+                    if (a.type > b.type) return 1;
+                    else if (a.type < b.type) return -1;
+                    else return 0;
+                });
+                assert.deepEqual(rocks, [basalt, obsidian]);
+            });
+    });
+
 });
