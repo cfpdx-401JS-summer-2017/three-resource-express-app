@@ -33,7 +33,6 @@ describe('REST API for rocks', () => {
                 rock._id = body._id;
                 rock.__v = body.__v;
                 rock.colors = body.colors;
-                rock.size = body.size;
                 rock.locations = body.locations;
                 return rock;
             });
@@ -49,8 +48,14 @@ describe('REST API for rocks', () => {
 
     it('GETs count of rocks', () => {
         return request.get('/rocks/count')
-            .then(count => assert.ok(count.body));
+            .then(res => res.body)
+            .then(count => assert.ok(count));
     });
 
+    it('GETs a rock if it exists', () => {
+        return request.get(`/rocks/${skip._id}`)
+            .then(res => res.body)
+            .then(rock => assert.deepEqual(rock, skip));
+    });
 
 });

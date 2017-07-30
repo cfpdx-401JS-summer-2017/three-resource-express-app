@@ -47,7 +47,8 @@ describe('REST API for walkways', () => {
 
     it('GETs count of walkways', () => {
         return request.get('/walkways/count')
-            .then(count => assert.ok(count.body));
+            .then( res => res.body)
+            .then(count => assert.ok(count));
     });
 
     it('GETs a walkway if it exists', () => {

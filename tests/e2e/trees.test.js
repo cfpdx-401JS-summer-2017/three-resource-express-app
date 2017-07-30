@@ -51,7 +51,8 @@ describe('REST API for trees', () => {
 
     it('GETs count of trees', () => {
         return request.get('/trees/count')
-            .then(count => assert.ok(count.body));
+            .then(res => res.body)
+            .then(count => assert.ok(count));
     });
 
     it('GETs a tree if it exists', () => {
