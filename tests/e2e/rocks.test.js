@@ -58,4 +58,14 @@ describe('REST API for rocks', () => {
             .then(rock => assert.deepEqual(rock, skip));
     });
 
+    it('returns 404 if rock does not exist', () => {
+        return request.get('/rocks/123412345567898765466676')
+            .then(() => { throw new Error('received 200 code when should be 404'); },
+                ({ response }) => {
+                    assert.ok(response.notFound);
+                    assert.ok(response.error);
+                }
+            );
+    });
+
 });

@@ -63,13 +63,11 @@ describe('REST API for trees', () => {
 
     it('returns 404 if tree does not exist', () => {
         return request.get('/trees/123412345567898765466676')
-            .then(() => {
-                throw new Error('received 200 code when should be 404');
-            },
-            ({ response }) => {
-                assert.ok(response.notFound);
-                assert.ok(response.error);
-            }
+            .then(() => { throw new Error('received 200 code when should be 404'); },
+                ({ response }) => {
+                    assert.ok(response.notFound);
+                    assert.ok(response.error);
+                }
             );
     });
 
