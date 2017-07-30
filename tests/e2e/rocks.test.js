@@ -93,4 +93,17 @@ describe('REST API for rocks', () => {
             .then(res => assert.deepEqual(res.body, { removed: false }));
     });
 
+    it('updates a rock by id', () => {
+        return request.put(`/rocks/${basalt._id}`)
+            .send({ colors: ['red', 'brown'] })
+            .then(() => request.get(`/rocks/${basalt._id}`))
+            .then(res => assert.equal(res.body.colors.length, 2));
+    });
+
+    it('patches a tree by id', () => {
+        return request.patch(`/rocks/${basalt._id}`)
+            .send({ size: 'very large' })
+            .then(res => assert.equal(res.body.size, 'very large'));
+    });
+
 });
