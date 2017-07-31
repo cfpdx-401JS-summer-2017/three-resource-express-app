@@ -11,7 +11,7 @@ const connection = require('mongoose').connection;
 const app = require('../../lib/app');
 const request = chai.request(app);
 
-describe.only('Company REST api', () => {
+describe('Company REST api', () => {
 
     beforeEach(() => connection.dropDatabase());
 
