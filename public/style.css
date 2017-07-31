@@ -1,0 +1,18 @@
+h1 {
+    color: slategray;
+    font-family: 'sans-serif';
+}
+
+p {
+    font-family: 'courier';
+}
+
+a {
+    text-decoration: none;
+
+}
+
+a:hover {
+    color: white;
+    background-color: slategrey;
+}

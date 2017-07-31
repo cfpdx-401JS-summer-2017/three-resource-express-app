@@ -16,7 +16,7 @@ describe('Job REST api', () => {
     beforeEach(() => connection.dropDatabase());
 
     function save(job) {
-        return request.post('/jobs') //why this?
+        return request.post('/jobs')
             .send(job)
             .then(({ body }) => {
                 job._id = body._id;
