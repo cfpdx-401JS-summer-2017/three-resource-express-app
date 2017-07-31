@@ -1,0 +1,37 @@
+{
+  "name": "three-resource-express-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests --recursive",
+    "dev": "nodemon --exec 'npm run test -- -w'",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sevfitz/three-resource-express-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sevfitz/three-resource-express-app/issues"
+  },
+  "homepage": "https://github.com/sevfitz/three-resource-express-app#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "chai": "^4.1.0",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.3.0",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.4",
+    "nodemon": "^1.11.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.4.2"
+  }
+}
