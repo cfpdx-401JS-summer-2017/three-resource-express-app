@@ -4,7 +4,7 @@ const connect = require('../../lib/connect');
 let connection = null;
 
 before(() => {
-    return connect('mongodb://localhost:27017/movie-test')
+    return connect('mongodb://localhost:27017/hollywood')
         .then(cn => connection = cn);
 });
 

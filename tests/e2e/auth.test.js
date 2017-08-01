@@ -23,7 +23,7 @@ describe('auth', () => {
                     },
                     res => {
                         assert.equal(res.status, code);
-                        assert.equal(res.resonse.body.error, error);
+                        assert.equal(res.response.body.error, error);
                     }
                 );
 
@@ -76,7 +76,7 @@ describe('auth', () => {
                 .get('/api/auth/verify')
                 .set('Authorization', 'bad token')
                 .then(
-                    () => throw new Error('success response not expected'); },
+                    () => { throw new Error('success response not expected'); },
                     (res) => { assert.equal(res.status, 401); }
                 )
         );

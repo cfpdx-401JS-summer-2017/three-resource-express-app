@@ -47,7 +47,7 @@ describe('studios REST api',()=>{
         name: 'Ealing Studios'
     };
     function saveStudio(studio) {
-        return request.post('/api/studios')
+        return request.post('/studios')
             .send(studio)
             .then(({body}) => {
                 studio._id = body._id;
@@ -67,7 +67,7 @@ describe('studios REST api',()=>{
 
     it('GETs studio if it exists', () => {
         return request
-            .get(`/api/studios/${mucusFilm._id}`)
+            .get(`/studios/${mucusFilm._id}`)
             .then(res => res.body)
             .then(studio => {
                 assert.equal(studio.name, mucusFilm.name);
@@ -76,7 +76,7 @@ describe('studios REST api',()=>{
     });
 
     it('returns 404 if studio does not exist', () => {
-        return request.get('/api/studios/58ff9f496aafd447254c29b5').then(
+        return request.get('/studios/58ff9f496aafd447254c29b5').then(
             () => {
                 //resolve
                 throw new Error('successful status code not expected');
@@ -94,14 +94,14 @@ describe('studios REST api',()=>{
             saveStudio(slvCup),
             saveStudio(ealStu),
         ])
-            .then(() => request.get('/api/studios'))
+            .then(() => request.get('/studios'))
             .then(res => {
                 const studios = res.body;
                 assert.deepEqual(studios, [mucusFilm, slvCup, ealStu]);
             });
     });
     it('rewrites studio data by id', ()=>{
-        return request.put(`/api/studios/${mucusFilm._id}`)
+        return request.put(`/studios/${mucusFilm._id}`)
             .send(lucasFlm)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -110,13 +110,13 @@ describe('studios REST api',()=>{
             });
     });
     it('deletes studio by id', () =>{
-        return request.delete(`/api/studios/${slvCup._id}`)
+        return request.delete(`/studios/${slvCup._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete studio by id', () =>{
-        return request.delete(`/api/studios/${slvCup._id}`)
+        return request.delete(`/studios/${slvCup._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });

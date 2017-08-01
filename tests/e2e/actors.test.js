@@ -37,7 +37,7 @@ describe('actors REST api',()=>{
         age: 75
     };
     function saveActor(actor) {
-        return request.post('/api/actors')
+        return request.post('/actors')
             .send(actor)
             .then(({body}) => {
                 actor._id = body._id;
@@ -57,7 +57,7 @@ describe('actors REST api',()=>{
 
     it('GETs actor if it exists', () => {
         return request
-            .get(`/api/actors/${peterD._id}`)
+            .get(`/actors/${peterD._id}`)
             .then(res => res.body)
             .then(actor => {
                 assert.equal(actor.name, peterD.name);
@@ -66,7 +66,7 @@ describe('actors REST api',()=>{
     });
 
     it('returns 404 if actor does not exist', () => {
-        return request.get('/api/actors/58ff9f496aafd447254c29b5').then(
+        return request.get('/actors/58ff9f496aafd447254c29b5').then(
             () => {
                 //resolve
                 throw new Error('successful status code not expected');
@@ -84,14 +84,14 @@ describe('actors REST api',()=>{
             saveActor(audreyH),
             saveActor(harrsF),
         ])
-            .then(() => request.get('/api/actors'))
+            .then(() => request.get('/actors'))
             .then(res => {
                 const actors = res.body;
                 assert.deepEqual(actors, [peterD, audreyH, harrsF]);
             });
     });
     it('rewrites actor data by id', ()=>{
-        return request.put(`/api/actors/${harrsF._id}`)
+        return request.put(`/actors/${harrsF._id}`)
             .send(harrison)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -100,13 +100,13 @@ describe('actors REST api',()=>{
             });
     });
     it('deletes actor by id', () =>{
-        return request.delete(`/api/actors/${audreyH._id}`)
+        return request.delete(`/actors/${audreyH._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete actor by id', () =>{
-        return request.delete(`/api/actors/${audreyH._id}`)
+        return request.delete(`/actors/${audreyH._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
