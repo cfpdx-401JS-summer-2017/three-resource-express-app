@@ -16,14 +16,14 @@ const request = chai.request(app);
 describe('movies REST api',()=>{
     before(() => connection.dropDatabase());
 
-    const jarasP = {
+    const jurassicPark = {
         title: 'Jurassic Park',
         year: 1993,
         genre: 'thriller',
         cast: [
             'Sam Neill',
-            'Laura Durn',
-            'Jeff Goldbloom'
+            'Laura Dern',
+            'Jeff Goldblum'
         ]
     };
 
@@ -50,7 +50,7 @@ describe('movies REST api',()=>{
 
     };
     function saveMovie(movie) {
-        return request.post('/movies')
+        return request.post('/api/movies')
             .send(movie)
             .then(({body}) => {
                 movie._id = body._id;
@@ -60,26 +60,26 @@ describe('movies REST api',()=>{
 
     }
     it('saves a movie', () => {
-        return saveMovie(jarasP)
+        return saveMovie(jurassicPark)
             .then(savedMovie => {
                 assert.isOk(savedMovie._id);
-                assert.equal(savedMovie.title, jarasP.title);
-                assert.equal(savedMovie.year, jarasP.year);
+                assert.equal(savedMovie.title, jurassicPark.title);
+                assert.equal(savedMovie.year, jurassicPark.year);
             });
     });
 
     it('GETs movie if it exists', () => {
         return request
-            .get(`/movies/${jarasP._id}`)
+            .get(`/api/movies/${jurassicPark._id}`)
             .then(res => res.body)
             .then(movie => {
-                assert.equal(movie.title, jarasP.title);
-                assert.equal(movie.year, jarasP.year);
+                assert.equal(movie.title, jurassicPark.title);
+                assert.equal(movie.year, jurassicPark.year);
             });
     });
 
     it('returns 404 if movie does not exist', () => {
-        return request.get('/movies/58ff9f496aafd447254c29b5').then(
+        return request.get('/api/movies/58ff9f496aafd447254c29b5').then(
             () => {
                 //resolve
                 throw new Error('successful status code not expected');
@@ -97,14 +97,14 @@ describe('movies REST api',()=>{
             saveMovie(somLH),
             saveMovie(hhelv),
         ])
-            .then(() => request.get('/movies'))
+            .then(() => request.get('/api/movies'))
             .then(res => {
                 const movies = res.body;
-                assert.deepEqual(movies, [jarasP, somLH, hhelv]);
+                assert.deepEqual(movies, [jurassicPark, somLH, hhelv]);
             });
     });
     it('rewrites movie data by id', ()=>{
-        return request.put(`/movies/${hhelv._id}`)
+        return request.put(`/api/movies/${hhelv._id}`)
             .send(helv)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -113,13 +113,13 @@ describe('movies REST api',()=>{
             });
     });
     it('deletes movie by id', () =>{
-        return request.delete(`/movies/${somLH._id}`)
+        return request.delete(`/api/movies/${somLH._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete movie by id', () =>{
-        return request.delete(`/movies/${somLH._id}`)
+        return request.delete(`/api/movies/${somLH._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });

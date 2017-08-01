@@ -24,8 +24,8 @@ describe('studios REST api',()=>{
             zip: 99999
         }
     };
-    const mucasFlm = {
-        name: 'Muchas Film',
+    const mucusFilm = {
+        name: 'Mucus Film',
         address:{
             city: 'sanfan',
             state: 'Cali',
@@ -47,7 +47,7 @@ describe('studios REST api',()=>{
         name: 'Ealing Studios'
     };
     function saveStudio(studio) {
-        return request.post('/studios')
+        return request.post('/api/studios')
             .send(studio)
             .then(({body}) => {
                 studio._id = body._id;
@@ -57,26 +57,26 @@ describe('studios REST api',()=>{
 
     }
     it('saves a studio', () => {
-        return saveStudio(mucasFlm)
+        return saveStudio(mucusFilm)
             .then(savedStudio => {
                 assert.isOk(savedStudio._id);
-                assert.equal(savedStudio.name, mucasFlm.name);
-                assert.deepEqual(savedStudio.address, mucasFlm.address);
+                assert.equal(savedStudio.name, mucusFilm.name);
+                assert.deepEqual(savedStudio.address, mucusFilm.address);
             });
     });
 
     it('GETs studio if it exists', () => {
         return request
-            .get(`/studios/${mucasFlm._id}`)
+            .get(`/api/studios/${mucusFilm._id}`)
             .then(res => res.body)
             .then(studio => {
-                assert.equal(studio.name, mucasFlm.name);
-                assert.deepEqual(studio.address, mucasFlm.address);
+                assert.equal(studio.name, mucusFilm.name);
+                assert.deepEqual(studio.address, mucusFilm.address);
             });
     });
 
     it('returns 404 if studio does not exist', () => {
-        return request.get('/studios/58ff9f496aafd447254c29b5').then(
+        return request.get('/api/studios/58ff9f496aafd447254c29b5').then(
             () => {
                 //resolve
                 throw new Error('successful status code not expected');
@@ -94,14 +94,14 @@ describe('studios REST api',()=>{
             saveStudio(slvCup),
             saveStudio(ealStu),
         ])
-            .then(() => request.get('/studios'))
+            .then(() => request.get('/api/studios'))
             .then(res => {
                 const studios = res.body;
-                assert.deepEqual(studios, [mucasFlm, slvCup, ealStu]);
+                assert.deepEqual(studios, [mucusFilm, slvCup, ealStu]);
             });
     });
     it('rewrites studio data by id', ()=>{
-        return request.put(`/studios/${mucasFlm._id}`)
+        return request.put(`/api/studios/${mucusFilm._id}`)
             .send(lucasFlm)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -110,13 +110,13 @@ describe('studios REST api',()=>{
             });
     });
     it('deletes studio by id', () =>{
-        return request.delete(`/studios/${slvCup._id}`)
+        return request.delete(`/api/studios/${slvCup._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete studio by id', () =>{
-        return request.delete(`/studios/${slvCup._id}`)
+        return request.delete(`/api/studios/${slvCup._id}`)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
