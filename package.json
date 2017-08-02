@@ -34,8 +34,10 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "jsonwebtoken-promisified": "^1.0.3",
     "mongoose": "^4.11.4"
   }
 }
