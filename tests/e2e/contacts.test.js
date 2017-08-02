@@ -21,7 +21,7 @@ describe('Contacts REST api', () => {
             });
     }
 
-    it.only('saves a contact', () => {
+    it('saves a contact', () => {
         let contact = {
             name: 'Joel Gunz',
             employer: 'Nike',
