@@ -8,8 +8,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests --recursive",
-    "dev": "nodemon --exec 'npm run test -- -w'",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "npm run test:run",
+    "test:run": "mocha tests --recursive",
+    "test:watch": "npm run test:run -- -w",
+    "test:unit": "mocha tests/unit --recursive",
+    "test:e2e": "mocha tests/e2e --recursive",
     "start": "nodemon server.js"
   },
   "repository": {
@@ -23,15 +28,19 @@
   },
   "homepage": "https://github.com/sevfitz/three-resource-express-app#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
-    "chai": "^4.1.0",
-    "chai-http": "^3.0.0",
-    "eslint": "^4.3.0",
     "express": "^4.15.3",
+    "jsonwebtoken-promisified": "^1.0.3",
     "mongoose": "^4.11.4",
+    "morgan": "^1.8.2",
     "nodemon": "^1.11.0"
   },
   "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.3.0",
+    "eslint-plugin-import": "^2.7.0",
     "mocha": "^3.4.2"
   }
 }
