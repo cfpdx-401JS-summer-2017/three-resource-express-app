@@ -1,20 +1,13 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
-process.env.MONGODB_URI = 'mongodb://localhost:27017/hollywood-test';
-
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-
-const request = chai.request(app);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
 describe('actors REST api',()=>{
-    before(() => connection.dropDatabase());
+    
+    before(db.drop);
+
+    let token = null;
+    before(() => db.getToken().then(t => token = t));
 
     const peterD = {
         name: 'Peter Dinklage',
@@ -37,7 +30,9 @@ describe('actors REST api',()=>{
         age: 75
     };
     function saveActor(actor) {
-        return request.post('/actors')
+        return request
+            .post('/actors')
+            .set('Authorization', token)
             .send(actor)
             .then(({body}) => {
                 actor._id = body._id;
@@ -58,6 +53,7 @@ describe('actors REST api',()=>{
     it('GETs actor if it exists', () => {
         return request
             .get(`/actors/${peterD._id}`)
+            .set('Authorization', token)
             .then(res => res.body)
             .then(actor => {
                 assert.equal(actor.name, peterD.name);
@@ -66,17 +62,19 @@ describe('actors REST api',()=>{
     });
 
     it('returns 404 if actor does not exist', () => {
-        return request.get('/actors/58ff9f496aafd447254c29b5').then(
-            () => {
+        return request.get('/actors/58ff9f496aafd447254c29b5')
+            .set('Authorization', token)
+            .then(
+                () => {
                 //resolve
-                throw new Error('successful status code not expected');
-            },
-            ({ response }) => {
+                    throw new Error('successful status code not expected');
+                },
+                ({ response }) => {
                 //reject
-                assert.ok(response.notFound);
-                assert.isOk(response.error);
-            }
-        );
+                    assert.ok(response.notFound);
+                    assert.isOk(response.error);
+                }
+            );
     });
 
     it('GET all actors', () => {
@@ -84,7 +82,9 @@ describe('actors REST api',()=>{
             saveActor(audreyH),
             saveActor(harrsF),
         ])
-            .then(() => request.get('/actors'))
+            .then(() => request.get('/actors')
+                .set('Authorization', token)
+            )
             .then(res => {
                 const actors = res.body;
                 assert.deepEqual(actors, [peterD, audreyH, harrsF]);
@@ -92,6 +92,7 @@ describe('actors REST api',()=>{
     });
     it('rewrites actor data by id', ()=>{
         return request.put(`/actors/${harrsF._id}`)
+            .set('Authorization', token)
             .send(harrison)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -101,12 +102,14 @@ describe('actors REST api',()=>{
     });
     it('deletes actor by id', () =>{
         return request.delete(`/actors/${audreyH._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete actor by id', () =>{
         return request.delete(`/actors/${audreyH._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
