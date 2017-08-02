@@ -53,7 +53,7 @@ describe('auth', () => {
         );
 
         it('signin requires password', () =>
-            badRequest('api/auth/signin', { email: 'abc'}, 400, 'email and password must be supplied')
+            badRequest('/api/auth/signin', { email: 'abc' }, 400, 'email and password must be supplied')
         );
 
         it('signin with wrong user', () => 
@@ -61,7 +61,7 @@ describe('auth', () => {
         );
 
         it('signin with wrong password', () =>
-            badRequest('/api/auth/signin', { email: user.email, password: 'bad' }, 401, 'Invalid Login')
+            badRequest('/api/auth/signin', { email: user.email, password: 'bad!!!' }, 401, 'Invalid Login')
         );
 
         it('signin', () => 
@@ -89,11 +89,11 @@ describe('auth', () => {
         );
     });
 
-    describe.skip('unauthorized', () => {
+    describe('unauthorized', () => {
 
         it('401 with no token', () => {
             return request
-                .get('/api/movies')
+                .get('/api/auth/verify')
                 .then(
                     () => { throw new Error ('status should not be 200'); },
                     res => {
@@ -105,7 +105,7 @@ describe('auth', () => {
 
         it('403 with invalid token', () => {
             return request 
-                .get('/api/stores')
+                .get('/api/auth/verify')
                 .set('Authorization', 'badtoken')
                 .then(
                     () => { throw new Error('status should not be 200'); },
