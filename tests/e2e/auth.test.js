@@ -55,7 +55,7 @@ describe('auth', () => {
         );
 
         it('signin with wrong user', () =>
-            badRequest('/api/auth/signin', { email: 'bad user', password: user.password }, 400, 'Invalid Login')
+            badRequest('/api/auth/signin', { email: 'bad user', password: user.password }, 401, 'Invalid Login')
         );
 
         it('signin', () =>
@@ -78,7 +78,7 @@ describe('auth', () => {
         it('token is valid', () =>
             request 
                 .get('/api/auth/verify')
-                .set('Authorization', 'token')
+                .set('Authorization', token)
                 .then(res => assert.ok(res.body))
         );
     });
