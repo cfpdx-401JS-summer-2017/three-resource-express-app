@@ -1,22 +1,13 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
-process.env.MONGODB_URI = 'mongodb://localhost:27017/job-search-test';
-require('../../lib/connect');
+describe.skip('Job REST api', () => {
 
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-const request = chai.request(app);
-
-describe('Job REST api', () => {
-
-    beforeEach(() => connection.dropDatabase());
+    beforeEach(() => db.drop());
 
     function save(job) {
-        return request.post('/jobs')
+        return request.post('/api/jobs')
             .send(job)
             .then(({ body }) => {
                 job._id = body._id;
@@ -55,7 +46,7 @@ describe('Job REST api', () => {
 
         return Promise.all(jobs.map(save))
             .then(saved => jobs = saved)
-            .then(() => request.get('/jobs'))
+            .then(() => request.get('/api/jobs'))
             .then(res => {
                 const saved = res.body.sort((a, b) => a._id > b._id ? 1 : -1 );
                 assert.deepEqual(saved, jobs);
@@ -72,7 +63,7 @@ describe('Job REST api', () => {
 
         return save(job)
             .then(res => res.body = job)
-            .then(job => request.get(`/jobs/${job._id}`))
+            .then(job => request.get(`/api/jobs/${job._id}`))
             .then(res => {
                 assert.deepEqual(res.body, job);
             });
@@ -88,7 +79,7 @@ describe('Job REST api', () => {
 
         return save(job)
             .then(res => res.body = job)
-            .then(job => request.delete(`/jobs/${job._id}`))
+            .then(job => request.delete(`/api/jobs/${job._id}`))
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });
             });
@@ -104,7 +95,7 @@ describe('Job REST api', () => {
 
         return save(newJob)
             .then(res => res.body = newJob)
-            .then(job => request.put(`/jobs/${job._id}`).send(jobUpdate))
+            .then(job => request.put(`/api/jobs/${job._id}`).send(jobUpdate))
             .then(res => {
                 assert.deepEqual(res.body.applied, jobUpdate.applied);
             });

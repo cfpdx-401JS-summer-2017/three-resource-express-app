@@ -1,22 +1,13 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
-process.env.MONGODB_URI = 'mongodb://localhost:27017/job-search-test';
-require('../../lib/connect');
+describe.skip('Company REST api', () => {
 
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-const request = chai.request(app);
-
-describe('Company REST api', () => {
-
-    beforeEach(() => connection.dropDatabase());
+    beforeEach(() => db.drop());
 
     function save(company) {
-        return request.post('/companies')
+        return request.post('/api/companies')
             .send(company)
             .then(({ body }) => {
                 company._id = body._id;
@@ -70,7 +61,7 @@ describe('Company REST api', () => {
 
         return Promise.all(companies.map(save))
             .then(saved => companies = saved)
-            .then(() => request.get('/companies'))
+            .then(() => request.get('/api/companies'))
             .then(res => {
                 const saved = res.body.sort((a, b) => a._id > b._id ? 1 : -1 );
                 assert.deepEqual(saved, companies);
@@ -90,7 +81,7 @@ describe('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.get(`/companies/${company._id}`))
+            .then(company => request.get(`/api/companies/${company._id}`))
             .then(res => {
                 assert.deepEqual(res.body, company);
             });
@@ -108,7 +99,7 @@ describe('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.delete(`/companies/${company._id}`))
+            .then(company => request.delete(`/api/companies/${company._id}`))
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });
             });
@@ -140,7 +131,7 @@ describe('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.put(`/companies/${company._id}`).send(update))
+            .then(company => request.put(`/api/companies/${company._id}`).send(update))
             .then(res => {
                 assert.deepEqual(res.body.location, update.location);
             });
