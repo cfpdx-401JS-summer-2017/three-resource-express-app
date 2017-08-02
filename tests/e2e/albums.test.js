@@ -1,18 +1,23 @@
+const db = require('./helpers/db');
+const request = require('./helpers/request');
 const chai = require('chai');
 const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
+// const chaiHttp = require('chai-http');
+// chai.use(chaiHttp);
 
-process.env.MONGODB_URI = 'mongodb://localhost:27017/musicians-test';
-require('../../lib/connect');
+// process.env.MONGODB_URI = 'mongodb://localhost:27017/musicians-test';
+// require('../../lib/connect');
 
-const connection = require('mongoose').connection;
+// const connection = require('mongoose').connection;
 
-const app = require('../../lib/app');
-const request = chai.request(app);
+// const app = require('../../lib/app');
+// const request = chai.request(app);
 
 describe('albums REST api', () => {
-    before(() => connection.dropDatabase());
+    before(db.drop);
+    let token = null;
+
+    before(() => db.getToken().then(t => token = t));
 
     const album1 = {
         name: 'Appetite For Destruction',
@@ -37,6 +42,7 @@ describe('albums REST api', () => {
 
     function saveAlbum(album) {
         return request.post('/albums')
+            .set('Authorization', token)
             .send(album)
             .then(({body}) => {
                 album._id = body._id;
@@ -58,6 +64,7 @@ describe('albums REST api', () => {
     it('GETs album if it exists', () => {
         return request
             .get(`/albums/${album1._id}`)
+            .set('Authorization', token)
             .then(res => res.body)
             .then(album => { 
                 assert.ok(album._id);
@@ -68,6 +75,7 @@ describe('albums REST api', () => {
 
     it('returns 404 if album does not exist', () => {
         return request.get('/albums/58ff9f496aafd447254c29b5')
+            .set('Authorization', token)
             .then(
                 () => {
                     throw new Error('successful status code not expected');
@@ -83,7 +91,8 @@ describe('albums REST api', () => {
             saveAlbum(album2),
             saveAlbum(album3),
         ])
-            .then(() => request.get('/albums'))
+            .then(() => request.get('/albums')
+                .set('Authorization', token))
             .then(res => {
                 const albums = res.body;
                 assert.deepEqual(albums, [album1,album2,album3]);
@@ -98,6 +107,7 @@ describe('albums REST api', () => {
             tracks: 13
         };
         return request.put(`/albums/${album3._id}`)
+            .set('Authorization', token)
             .send(rageAgainstTheMachine)
             .then(res => res.body)
             .then(album => {
@@ -108,6 +118,7 @@ describe('albums REST api', () => {
 
     it('DELETES the album by id', () => {
         return request.delete(`/albums/${album3._id}`)
+            .set('Authorization', token)
             .then (res => {
                 assert.deepEqual(JSON.parse(res.text), {removed: true});
             });

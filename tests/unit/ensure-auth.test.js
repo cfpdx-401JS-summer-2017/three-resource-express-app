@@ -10,7 +10,7 @@ describe('ensure auth middleware', () => {
         };
 
         const next = (error) => {
-            assert.deepEqual(error, { code: 401, error: 'No Authorization Found' });
+            assert.deepEqual(error, { code: 401, error: 'No Authorization found' });
             done();
         };
         
@@ -24,7 +24,7 @@ describe('ensure auth middleware', () => {
         };
 
         const next = (error) => {
-            assert.deepEqual(error, { code: 401, error: 'Authorization Failed' });
+            assert.deepEqual(error, { code: 401, error: 'Authorization failed' });
             done();
         };
         
