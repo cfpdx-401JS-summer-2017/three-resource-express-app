@@ -58,6 +58,12 @@ describe('flowers api', () => {
                 ({ response }) => assert.ok(response.notFound && response.error));
     });
 
+    it('errors without authorization', () => {
+        return request.get(`/api/flowers/${daisy._id}`)
+            .then(() => { throw new Error('Unauthorized'); },
+                ({ response }) => assert.equal(response.body.error, 'No Authorization Found'));
+    });
+
     it('GETs all flowers', () => {
         return Promise.all([
             saveFlower(rose),
