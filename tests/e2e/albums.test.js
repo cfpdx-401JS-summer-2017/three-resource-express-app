@@ -90,7 +90,7 @@ describe('albums REST api', () => {
                 assert.deepEqual(albums, [album1,album2,album3]);
             });
     });
-    it ('DELETES the album by id', () => {
+    it('DELETES the album by id', () => {
         return request.delete(`/albums/${album3._id}`)
         .then (res => {
             assert.deepEqual(JSON.parse(res.text), {removed: true});
