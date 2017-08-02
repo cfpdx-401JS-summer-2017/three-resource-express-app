@@ -8,13 +8,10 @@
     "test": "tests"
   },
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "npm run test:run",
-    "test:run": "mocha tests --recursive",
-    "test:watch": "npm run test:run -- -w",
-    "test:unit": "mocha tests/unit --recursive",
-    "test:e2e": "mocha tests/e2e --recursive",
+    "test": "mocha tests --recursive",
+    "test:unit": "mocha tests/unit",
+    "test:e2e": "mocha tests/e2e",
+    "dev": "nodemon --exec 'npm run test -- -w'",
     "start": "nodemon server.js"
   },
   "repository": {

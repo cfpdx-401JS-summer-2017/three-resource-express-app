@@ -1,18 +1,10 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
-process.env.MONGODB_URL = 'mongodb://localhost:27017/arboretum-test';
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-const app = require('../../lib/app');
-const request = chai.request(app);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
 describe('REST API for trees', () => {
 
-    before(() => connection.dropDatabase());
+    before(db.drop);
 
     const oak = {
         variety: 'Oak',
@@ -30,7 +22,7 @@ describe('REST API for trees', () => {
     };
 
     function saveTree(tree) {
-        return request.post('/trees')
+        return request.post('/api/trees')
             .send(tree)
             .then(({ body }) => {
                 tree._id = body._id;
@@ -50,19 +42,19 @@ describe('REST API for trees', () => {
     });
 
     it('GETs count of trees', () => {
-        return request.get('/trees/count')
+        return request.get('/api/trees/count')
             .then(res => res.body)
             .then(count => assert.ok(count));
     });
 
     it('GETs a tree if it exists', () => {
-        return request.get(`/trees/${oak._id}`)
+        return request.get(`/api/trees/${oak._id}`)
             .then(res => res.body)
             .then(tree => assert.deepEqual(tree, oak));
     });
 
     it('returns 404 if tree does not exist', () => {
-        return request.get('/trees/123412345567898765466676')
+        return request.get('/api/trees/123412345567898765466676')
             .then(() => { throw new Error('received 200 code when should be 404'); },
                 ({ response }) => {
                     assert.ok(response.notFound);
@@ -87,24 +79,24 @@ describe('REST API for trees', () => {
     });
 
     it('removes a tree by id', () => {
-        return request.delete(`/trees/${birch._id}`)
+        return request.delete(`/api/trees/${birch._id}`)
             .then(res => assert.deepEqual(res.body, { removed: true }));
     });
     
     it('returns removed: false if no tree to remove', () => {
-        return request.delete(`/trees/${birch._id}`)
+        return request.delete(`/api/trees/${birch._id}`)
             .then(res => assert.deepEqual(res.body, { removed: false }));
     });
 
     it('updates a tree by id', () => {
-        return request.put(`/trees/${redwood._id}`)
+        return request.put(`/api/trees/${redwood._id}`)
             .send({ bark: [ { texture: 'rough'}, { color: 'red' }] })
-            .then(() => request.get(`/trees/${redwood._id}`))
+            .then(() => request.get(`/api/trees/${redwood._id}`))
             .then(res => assert.equal(res.body.bark.length, 2));
     });
 
     it('patches a tree by id', () => {
-        return request.patch(`/trees/${redwood._id}`)
+        return request.patch(`/api/trees/${redwood._id}`)
             .send({ variety: 'cedar' })
             .then(res => assert.equal(res.body.variety, 'cedar'));
     });
