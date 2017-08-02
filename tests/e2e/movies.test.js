@@ -1,20 +1,13 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
-process.env.MONGODB_URI = 'mongodb://localhost:27017/hollywood-test';
-
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-
-const request = chai.request(app);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
 describe('movies REST api',()=>{
-    before(() => connection.dropDatabase());
+    
+    before(db.drop);
+
+    let token = null;
+    before(() => db.getToken().then(t => token = t));
 
     const jurassicPark = {
         title: 'Jurassic Park',
@@ -51,6 +44,7 @@ describe('movies REST api',()=>{
     };
     function saveMovie(movie) {
         return request.post('/movies')
+            .set('Authorization', token)
             .send(movie)
             .then(({body}) => {
                 movie._id = body._id;
@@ -71,6 +65,7 @@ describe('movies REST api',()=>{
     it('GETs movie if it exists', () => {
         return request
             .get(`/movies/${jurassicPark._id}`)
+            .set('Authorization', token)
             .then(res => res.body)
             .then(movie => {
                 assert.equal(movie.title, jurassicPark.title);
@@ -79,17 +74,19 @@ describe('movies REST api',()=>{
     });
 
     it('returns 404 if movie does not exist', () => {
-        return request.get('/movies/58ff9f496aafd447254c29b5').then(
-            () => {
+        return request.get('/movies/58ff9f496aafd447254c29b5')
+            .set('Authorization', token)
+            .then(
+                () => {
                 //resolve
-                throw new Error('successful status code not expected');
-            },
-            ({ response }) => {
+                    throw new Error('successful status code not expected');
+                },
+                ({ response }) => {
                 //reject
-                assert.ok(response.notFound);
-                assert.isOk(response.error);
-            }
-        );
+                    assert.ok(response.notFound);
+                    assert.isOk(response.error);
+                }
+            );
     });
 
     it('GET all movies', () => {
@@ -97,7 +94,8 @@ describe('movies REST api',()=>{
             saveMovie(somLH),
             saveMovie(hhelv),
         ])
-            .then(() => request.get('/movies'))
+            .then(() => request.get('/movies')
+                .set('Authorization', token))
             .then(res => {
                 const movies = res.body;
                 assert.deepEqual(movies, [jurassicPark, somLH, hhelv]);
@@ -105,6 +103,7 @@ describe('movies REST api',()=>{
     });
     it('rewrites movie data by id', ()=>{
         return request.put(`/movies/${hhelv._id}`)
+            .set('Authorization', token)
             .send(helv)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -114,12 +113,14 @@ describe('movies REST api',()=>{
     });
     it('deletes movie by id', () =>{
         return request.delete(`/movies/${somLH._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete movie by id', () =>{
         return request.delete(`/movies/${somLH._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });

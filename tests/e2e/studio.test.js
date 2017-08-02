@@ -1,20 +1,13 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
-process.env.MONGODB_URI = 'mongodb://localhost:27017/hollywood-test';
-
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-
-const request = chai.request(app);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
 describe('studios REST api',()=>{
-    before(() => connection.dropDatabase());
+
+    before(db.drop);
+
+    let token = null;
+    before(() => db.getToken().then(t => token = t));
 
     const lucasFlm = {
         name: 'Lucas Film',
@@ -48,6 +41,7 @@ describe('studios REST api',()=>{
     };
     function saveStudio(studio) {
         return request.post('/studios')
+            .set('Authorization', token)
             .send(studio)
             .then(({body}) => {
                 studio._id = body._id;
@@ -68,6 +62,7 @@ describe('studios REST api',()=>{
     it('GETs studio if it exists', () => {
         return request
             .get(`/studios/${mucusFilm._id}`)
+            .set('Authorization', token)
             .then(res => res.body)
             .then(studio => {
                 assert.equal(studio.name, mucusFilm.name);
@@ -76,17 +71,19 @@ describe('studios REST api',()=>{
     });
 
     it('returns 404 if studio does not exist', () => {
-        return request.get('/studios/58ff9f496aafd447254c29b5').then(
-            () => {
+        return request.get('/studios/58ff9f496aafd447254c29b5')
+            .set('Authorization', token)
+            .then(
+                () => {
                 //resolve
-                throw new Error('successful status code not expected');
-            },
-            ({ response }) => {
+                    throw new Error('successful status code not expected');
+                },
+                ({ response }) => {
                 //reject
-                assert.ok(response.notFound);
-                assert.isOk(response.error);
-            }
-        );
+                    assert.ok(response.notFound);
+                    assert.isOk(response.error);
+                }
+            );
     });
 
     it('GET all studios', () => {
@@ -94,7 +91,8 @@ describe('studios REST api',()=>{
             saveStudio(slvCup),
             saveStudio(ealStu),
         ])
-            .then(() => request.get('/studios'))
+            .then(() => request.get('/studios')
+                .set('Authorization', token))
             .then(res => {
                 const studios = res.body;
                 assert.deepEqual(studios, [mucusFilm, slvCup, ealStu]);
@@ -102,6 +100,7 @@ describe('studios REST api',()=>{
     });
     it('rewrites studio data by id', ()=>{
         return request.put(`/studios/${mucusFilm._id}`)
+            .set('Authorization', token)
             .send(lucasFlm)
             .then(res => {
                 assert.isOk(res.body._id);
@@ -111,12 +110,14 @@ describe('studios REST api',()=>{
     });
     it('deletes studio by id', () =>{
         return request.delete(`/studios/${slvCup._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: true });
             });
     });
     it('fails to delete studio by id', () =>{
         return request.delete(`/studios/${slvCup._id}`)
+            .set('Authorization', token)
             .then(res => {
                 assert.deepEqual(JSON.parse(res.text), { removed: false });
             });
