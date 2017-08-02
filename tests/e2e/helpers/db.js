@@ -8,7 +8,7 @@ module.exports = {
     },
 
     getToken(user = { email: 'christy@washere.com', password: 'hello123' }) {
-        return request.post('./api/auth/signup')
+        return request.post('/api/auth/signup')
             .send(user)
             .then(res => res.body.token);
     }
