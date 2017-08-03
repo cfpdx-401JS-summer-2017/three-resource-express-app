@@ -1,19 +1,10 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const { assert } = require('chai');
 
-process.env.MONGODB_URI = 'mongodb://localhost:27017/drinks-test';
-
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-
-const app = require('../../lib/app');
-const request = chai.request(app);
 
 describe('drinks REST api', () => {
-    before(() => connection.dropDatabase());
+    before(db.drop);
 
     const margarita = {
         name: 'margarita',
