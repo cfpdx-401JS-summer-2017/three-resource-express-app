@@ -59,7 +59,7 @@ describe.only('auth', () => {
         it('signin fails with wrong password', () => {
             badRequest('/api/auth/signup', { user: user.email, password: 'wrong' }, 401, 'Invalid Login');
         });
-        
+
         it('signin successful', () => {
             request
                 .post('/api/auth/signin')
@@ -67,8 +67,51 @@ describe.only('auth', () => {
                 .then(res => assert.ok(res.body.token));
         });
 
-        //TODO:
+        it('token is invalid', () => {
+            request
+                .get('/api/auth/verify')
+                .set('Authorization', 'ima bad token')
+                .then(
+                    () => { throw new Error('success response not expected'); },
+                    (res) => { assert.equal(res.status, 401); }
+                );
+        });
 
+        it('token is valid', () => {
+            request
+                .get('/api/auth/verify')
+                .set('Authorization', token)
+                .then(res => assert.ok(res.body))
+        });
+    });
+
+});
+
+describe('unathorized', () => {
+
+    it('returns 401 with no token', () => {
+        return request
+            .get('/api/stores')
+            .then(
+                () => { throw new Error('status should not be 200'); },
+                res => {
+                    assert.equal(res.status, 401);
+                    assert.equal(res.response.body.error, 'No Authorization Found');
+                }
+            );
+    });
+
+    it('403 with invalid token', () => {
+        return request
+            .get('/api/stores')
+            .set('Authorization', 'bad-token')
+            .then(
+                () => { throw new Error('status should not be 200'); },
+                res => {
+                    assert.equal(res.status, 401);
+                    assert.equal(res.response.body.error, 'Authorization Failed')
+                }
+            );
     });
 
 });
