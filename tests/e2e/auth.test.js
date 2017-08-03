@@ -95,6 +95,18 @@ describe('auth', () => {
         });
     });
 
+    // const admin = {
+    //     email: 'admin@email.com',
+    //     password: 'abc',
+    //     role: 'admin'
+    // };
+
+    // describe('roles', () => {
+        
+    //     it('')
+
+    // });
+
 });
 
 // QUESTION: not sure what this is testing that isn't tested above
