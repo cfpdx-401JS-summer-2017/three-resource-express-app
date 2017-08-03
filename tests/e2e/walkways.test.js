@@ -1,18 +1,10 @@
-const chai = require('chai');
-const assert = chai.assert;
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
-process.env.MONGODB_URL = 'mongodb://localhost:27017/arboretum-test';
-require('../../lib/connect');
-
-const connection = require('mongoose').connection;
-const app = require('../../lib/app');
-const request = chai.request(app);
+const db = require('./helpers/db');
+const request = require('./helpers/request');
+const assert = require('chai').assert;
 
 describe('REST API for walkways', () => {
 
-    before(() => connection.dropDatabase());
+    before(db.drop);
 
     const hilly = {
         type: 'hilly'
@@ -27,7 +19,7 @@ describe('REST API for walkways', () => {
     };
 
     function saveWalkway(walkway) {
-        return request.post('/walkways')
+        return request.post('/api/walkways')
             .send(walkway)
             .then(({ body }) => {
                 walkway._id = body._id;
@@ -46,19 +38,19 @@ describe('REST API for walkways', () => {
     });
 
     it('GETs count of walkways', () => {
-        return request.get('/walkways/count')
+        return request.get('/api/walkways/count')
             .then( res => res.body)
             .then(count => assert.ok(count));
     });
 
     it('GETs a walkway if it exists', () => {
-        return request.get(`/walkways/${hilly._id}`)
+        return request.get(`/api/walkways/${hilly._id}`)
             .then(res => res.body)
             .then(walkway => assert.deepEqual(walkway, hilly));
     });
 
     it('returns 404 if walkway does not exist', () => {
-        return request.get('/walkways/123412345567898765466676')
+        return request.get('/api/walkways/123412345567898765466676')
             .then(() => { throw new Error('received 200 code when should be 404'); },
                 ({ response }) => {
                     assert.ok(response.notFound);
@@ -83,24 +75,24 @@ describe('REST API for walkways', () => {
     });
 
     it('removes a walkway by id', () => {
-        return request.delete(`/walkways/${easy._id}`)
+        return request.delete(`/api/walkways/${easy._id}`)
             .then(res => assert.deepEqual(res.body, { removed: true }));
     });
 
     it('returns removed: false if walkway not there to remove', () => {
-        return request.delete(`/walkways/${easy._id}`)
+        return request.delete(`/api/walkways/${easy._id}`)
             .then(res => assert.deepEqual(res.body, { removed: false }));
     });
 
     it('updates a walkway by id', () => {
-        return request.put(`/walkways/${steep._id}`)
+        return request.put(`/api/walkways/${steep._id}`)
             .send({ length: 100 })
-            .then(() => request.get(`/walkways/${steep._id}`))
+            .then(() => request.get(`/api/walkways/${steep._id}`))
             .then(res => assert.equal(res.body['length'], 100));
     });
 
     it('patches a walkway by id', () => {
-        return request.patch(`/walkways/${steep._id}`)
+        return request.patch(`/api/walkways/${steep._id}`)
             .send({ composition: 'dirt' })
             .then(res => assert.equal(res.body.composition, 'dirt'));
     });
