@@ -2,12 +2,16 @@ const db = require('./helpers/db');
 const request = require('./helpers/request');
 const assert = require('chai').assert;
 
-describe.skip('Job REST api', () => {
+describe('Job REST api', () => {
 
-    beforeEach(() => db.drop());
+    beforeEach(db.drop);
+
+    let token = null;
+    before(() => db.getToken().then(t => token = t));
 
     function save(job) {
         return request.post('/api/jobs')
+            .set('Authorization', token)
             .send(job)
             .then(({ body }) => {
                 job._id = body._id;
@@ -46,7 +50,10 @@ describe.skip('Job REST api', () => {
 
         return Promise.all(jobs.map(save))
             .then(saved => jobs = saved)
-            .then(() => request.get('/api/jobs'))
+            .then(() => request
+                .get('/api/jobs')
+                .set('Authorization', token)
+            )
             .then(res => {
                 const saved = res.body.sort((a, b) => a._id > b._id ? 1 : -1 );
                 assert.deepEqual(saved, jobs);
@@ -63,7 +70,10 @@ describe.skip('Job REST api', () => {
 
         return save(job)
             .then(res => res.body = job)
-            .then(job => request.get(`/api/jobs/${job._id}`))
+            .then(job => request
+                .get(`/api/jobs/${job._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, job);
             });
@@ -79,9 +89,21 @@ describe.skip('Job REST api', () => {
 
         return save(job)
             .then(res => res.body = job)
-            .then(job => request.delete(`/api/jobs/${job._id}`))
+            .then(job => request
+                .delete(`/api/jobs/${job._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });
+            });
+    });
+
+    it('removes a job by id and returns false', () => {
+        return request.delete('/api/jobs/bad3513ea24ed29a123f0e15')
+            .set('Authorization', token)
+            .then(res => res.body)
+            .then(result => {
+                assert.deepEqual(result, { removed: false });
             });
     });
 
@@ -95,7 +117,11 @@ describe.skip('Job REST api', () => {
 
         return save(newJob)
             .then(res => res.body = newJob)
-            .then(job => request.put(`/api/jobs/${job._id}`).send(jobUpdate))
+            .then(job => request
+                .put(`/api/jobs/${job._id}`)
+                .send(jobUpdate)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body.applied, jobUpdate.applied);
             });

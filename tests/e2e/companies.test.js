@@ -2,12 +2,16 @@ const db = require('./helpers/db');
 const request = require('./helpers/request');
 const assert = require('chai').assert;
 
-describe.skip('Company REST api', () => {
+describe('Company REST api', () => {
 
-    beforeEach(() => db.drop());
+    beforeEach(db.drop);
+
+    let token = null;
+    before(() => db.getToken().then(t => token = t));
 
     function save(company) {
         return request.post('/api/companies')
+            .set('Authorization', token)
             .send(company)
             .then(({ body }) => {
                 company._id = body._id;
@@ -61,7 +65,10 @@ describe.skip('Company REST api', () => {
 
         return Promise.all(companies.map(save))
             .then(saved => companies = saved)
-            .then(() => request.get('/api/companies'))
+            .then(() => request
+                .get('/api/companies')
+                .set('Authorization', token)
+            )
             .then(res => {
                 const saved = res.body.sort((a, b) => a._id > b._id ? 1 : -1 );
                 assert.deepEqual(saved, companies);
@@ -81,7 +88,10 @@ describe.skip('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.get(`/api/companies/${company._id}`))
+            .then(company => request
+                .get(`/api/companies/${company._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, company);
             });
@@ -99,16 +109,22 @@ describe.skip('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.delete(`/api/companies/${company._id}`))
+            .then(company => request
+                .delete(`/api/companies/${company._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });
             });
     });
 
     it('removes a company by id and returns false', () => {
-        return request.delete('/companies/bade2ce0d3431d7cd30eb076')
-            .then(res => {
-                assert.deepEqual(res.body, { removed: false });
+        return request
+            .delete('/api/companies/bade2ce0d3431d7cd30eb076')
+            .set('Authorization', token)
+            .then(res => res.body)
+            .then(result => {
+                assert.deepEqual(result, { removed: false });
             });
     });
     
@@ -131,7 +147,11 @@ describe.skip('Company REST api', () => {
 
         return save(company)
             .then(res => res.body = company)
-            .then(company => request.put(`/api/companies/${company._id}`).send(update))
+            .then(company => request
+                .put(`/api/companies/${company._id}`)
+                .set('Authorization', token)
+                .send(update)
+            )
             .then(res => {
                 assert.deepEqual(res.body.location, update.location);
             });

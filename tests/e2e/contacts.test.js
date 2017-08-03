@@ -30,10 +30,10 @@ describe('Contacts REST api', () => {
 
         return save(contact)
             .then(saved => {
+                // contact = saved;
                 assert.isOk(saved._id);
                 assert.deepEqual(saved, contact);
             });
-
     });
     
     it('gets all contacts', () => {
@@ -55,7 +55,10 @@ describe('Contacts REST api', () => {
 
         return Promise.all(contacts.map(save))
             .then(saved => contacts = saved)
-            .then(() => request.get('api/contacts'))
+            .then(() => request
+                .get('/api/contacts')
+                .set('Authorization', token)
+            )
             .then(res => {
                 const saved = res.body.sort((a, b) => a._id > b._id ? 1 : -1 );
                 assert.deepEqual(saved, contacts);
@@ -72,7 +75,10 @@ describe('Contacts REST api', () => {
 
         return save(contact)
             .then(res => res.body = contact)
-            .then(contact => request.get(`api/contacts/${contact._id}`))
+            .then(contact => request
+                .get(`/api/contacts/${contact._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, contact);
             });
@@ -87,16 +93,21 @@ describe('Contacts REST api', () => {
 
         return save(contact)
             .then(res => res.body = contact)
-            .then(contact => request.delete(`api/contacts/${contact._id}`))
+            .then(contact => request
+                .delete(`/api/contacts/${contact._id}`)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });
             });
     });
 
     it('removes a contact by id and returns false', () => {
-        return request.delete('api/contacts/badec732c1f65718276bfadb')
-            .then(res => {
-                assert.deepEqual(res.body, { removed: false });
+        return request.delete('/api/contacts/badec732c1f65718276bfadb')
+            .set('Authorization', token)
+            .then(res => res.body)
+            .then(result => {
+                assert.deepEqual(result, { removed: false });
             });
     });
     
@@ -111,7 +122,10 @@ describe('Contacts REST api', () => {
 
         return save(contact)
             .then(res => res.body = contact)
-            .then(contact => request.put(`api/contacts/${contact._id}`).send(update))
+            .then(contact => request
+                .put(`/api/contacts/${contact._id}`).send(update)
+                .set('Authorization', token)
+            )
             .then(res => {
                 assert.deepEqual(res.body.employer, update.employer);
             });
