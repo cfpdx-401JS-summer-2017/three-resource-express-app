@@ -2,7 +2,7 @@ const db = require('./helpers/db');
 const request = require('./helpers/request');
 const assert = require('chai').assert;
 
-describe.only('auth', () => {
+describe('auth', () => {
 
     before(db.drop);
 
@@ -22,8 +22,8 @@ describe.only('auth', () => {
                         throw new Error('status should not be ok');
                     },
                     res => {
-                        console.log('error code >>>>', res.status);
-                        console.log('error msg >>>>', res.response.body.error);
+                        // console.log('error code >>>>', res.status);
+                        // console.log('error msg >>>>', res.response.body.error);
                         assert.equal(res.status, code);
                         assert.equal(res.response.body.error, error);
                     }
@@ -76,42 +76,53 @@ describe.only('auth', () => {
                     (res) => { assert.equal(res.status, 401); }
                 );
         });
+        
+        // it.skip('token is missing', () => {
+        //     request
+        //         .get('/api/auth/verify')
+        //         .set('Authorization')
+        //         .then(
+        //             () => { throw new Error('success response not expected'); },
+        //             (res) => { assert.equal(res.status, 401); }
+        //         );
+        // });
 
         it('token is valid', () => {
             request
                 .get('/api/auth/verify')
                 .set('Authorization', token)
-                .then(res => assert.ok(res.body))
+                .then(res => assert.ok(res.body));
         });
     });
 
 });
 
-describe('unathorized', () => {
+// QUESTION: not sure what this is testing that isn't tested above
+// describe.skip('unathorized', () => {
 
-    it('returns 401 with no token', () => {
-        return request
-            .get('/api/stores')
-            .then(
-                () => { throw new Error('status should not be 200'); },
-                res => {
-                    assert.equal(res.status, 401);
-                    assert.equal(res.response.body.error, 'No Authorization Found');
-                }
-            );
-    });
+//     it('returns 401 with no token', () => {
+//         return request
+//             .get('/api/jobs')
+//             .then(
+//                 () => { throw new Error('status should not be 200'); },
+//                 res => {
+//                     assert.equal(res.status, 401);
+//                     assert.equal(res.response.body.error, 'No Authorization Found');
+//                 }
+//             );
+//     });
 
-    it('403 with invalid token', () => {
-        return request
-            .get('/api/stores')
-            .set('Authorization', 'bad-token')
-            .then(
-                () => { throw new Error('status should not be 200'); },
-                res => {
-                    assert.equal(res.status, 401);
-                    assert.equal(res.response.body.error, 'Authorization Failed')
-                }
-            );
-    });
+//     it('403 with invalid token', () => {
+//         return request
+//             .get('/api/jobs')
+//             .set('Authorization', 'ima bad token')
+//             .then(
+//                 () => { throw new Error('status should not be 200'); },
+//                 res => {
+//                     assert.equal(res.status, 401);
+//                     assert.equal(res.response.body.error, 'Authorization Failed');
+//                 }
+//             );
+//     });
 
-});
+// });
