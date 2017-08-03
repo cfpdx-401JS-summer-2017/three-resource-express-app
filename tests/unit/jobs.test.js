@@ -1,4 +1,4 @@
-const { assert } = require('chai');
+const assert = require('chai').assert;
 const Job = require('../../lib/models/job');
 
 describe('Job model', () => {
