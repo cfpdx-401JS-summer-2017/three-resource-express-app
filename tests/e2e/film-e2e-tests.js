@@ -9,7 +9,6 @@ const { dropDb } = require('../helpers/db');
 
 describe('film e2e tests', () => {
   let testStudio = testHelper.studio;
-  let testActor = testHelper.actor;
   let testFilm = testHelper.film;
   before(() => dropDb());
 
