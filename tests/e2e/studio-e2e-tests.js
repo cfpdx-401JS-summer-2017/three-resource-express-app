@@ -2,18 +2,13 @@ const chai = require('chai');
 const assert = chai.assert;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-// process.env.MONGODB_URI = 'mongodb://localhost:27017/3resource';
-
 require('../../lib/connect');
-
 const connection = require('mongoose').connection;
-
 const app = require('../../lib/app');
-
 const request = chai.request(app);
 
-describe('studio REST api', () => {
 
+describe('studio REST api', () => {
 
     const testStudio = {
         name: 'Studio Fantastico',
@@ -70,8 +65,6 @@ describe('studio REST api', () => {
     };
 
     let testStudio2;
-
-
 
     function saveActor(actor) {
         return request.post('/actors')
