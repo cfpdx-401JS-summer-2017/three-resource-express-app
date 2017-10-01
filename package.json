@@ -1,0 +1,34 @@
+{
+  "name": "three-resource-express-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test:watch:nodemon": "nodemon --watch src --watch tests --exec 'npm test'",
+    "test:watch": "npm test -- -w",
+    "test": "mocha tests --recursive --reporter mocha-better-spec-reporter",
+    "start": "nodemon --watch lib --watch tests --exec 'npm test'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wbeck32/three-resource-express-app.git"
+  },
+  "author": "Wendy Beck",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wbeck32/three-resource-express-app/issues"
+  },
+  "homepage": "https://github.com/wbeck32/three-resource-express-app#readme",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "express": "^4.16.1",
+    "mocha": "^3.5.3",
+    "mocha-better-spec-reporter": "^3.1.0",
+    "morgan": "^1.9.0"
+  }
+}
